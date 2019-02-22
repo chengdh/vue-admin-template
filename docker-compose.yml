@@ -1,0 +1,10 @@
+version: '2'
+services:
+  app:
+    build: .
+    ports:
+      - "9090:8080"
+      - "9528:9528"
+    command: npm run dev 
+    volumes:
+      - .:/app
