@@ -5,6 +5,9 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCoffee, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 import '@/styles/index.scss' // global css
 
@@ -26,6 +29,10 @@ import '@/permission' // permission control
 import '../mock' // simulation data
 
 Vue.use(ElementUI, { locale })
+
+library.add(faCoffee, faUserCircle)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
 
