@@ -4,9 +4,12 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 const user = {
   state: {
     token: getToken(),
-    name: '',
+    username: '',
+    first_name: '',
+    last_name: '',
     avatar: '',
-    roles: []
+    groups: [],
+    orgs: []
   },
 
   mutations: {
@@ -14,14 +17,24 @@ const user = {
       state.token = token
     },
     SET_NAME: (state, name) => {
-      state.name = name
+      state.username = name
+    },
+    SET_FIRST_NAME: (state, name) => {
+      state.first_name = name
+    },
+    SET_LAST_NAME: (state, name) => {
+      state.last_name = name
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
     },
-    SET_ROLES: (state, roles) => {
-      state.roles = roles
+    SET_GROUPS: (state, groups) => {
+      state.groups = groups
+    },
+    SET_ORGS: (state, orgs) => {
+      state.orgs = orgs
     }
+
   },
 
   actions: {
@@ -29,47 +42,58 @@ const user = {
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
-          setToken(response.token)
-          commit('SET_TOKEN', response.token)
-          commit('SET_NAME', response.username)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        login(username, userInfo.password)
+          .then(response => {
+            const ret_user = response.user
+            setToken(response.token)
+            commit('SET_TOKEN', response.token)
+            commit('SET_NAME', ret_user.username)
+            commit('SET_FIRST_NAME', ret_user.first_name)
+            commit('SET_LAST_NAME', ret_user.last_name)
+            commit('SET_GROUPS', ret_user.groups)
+            resolve()
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
 
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo(state.token).then(response => {
-          const data = response.data
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
-          }
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
+        getInfo(state.token)
+          .then(response => {
+            const data = response.data
+            if (data.roles && data.roles.length > 0) {
+              // 验证返回的roles是否是一个非空数组
+              commit('SET_ROLES', data.roles)
+            } else {
+              reject('getInfo: roles must be a non-null array !')
+            }
+            commit('SET_NAME', data.name)
+            commit('SET_AVATAR', data.avatar)
+            resolve(response)
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
 
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          removeToken()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        logout(state.token)
+          .then(() => {
+            commit('SET_TOKEN', '')
+            commit('SET_ROLES', [])
+            removeToken()
+            resolve()
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
 
