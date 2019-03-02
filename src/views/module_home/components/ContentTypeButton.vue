@@ -1,9 +1,11 @@
 <template>
   <el-col :span="3">
-    <div class="big-button-wrapper" @click="handleClick">
+    <div class="big-button-wrapper">
       <el-button size="medium">
         <i class="el-icon-star-off big-icon"></i>
-        <p>{{ contentTypeCat.name }}</p>
+        <p>
+        {{ contentType.name }}
+        </p>
       </el-button>
     </div>
   </el-col>
@@ -12,14 +14,9 @@
 export default {
   name: "BigButton",
   props: {
-    contentTypeCat: {
+    contentType: {
       type: Object,
       required: true
-    }
-  },
-  methods: {
-    handleClick() {
-      this.$router.push({ name: "module_home", params: {meta_title: this.contentTypeCat.name,contentTypeCat: this.contentTypeCat} });
     }
   }
 };
@@ -28,8 +25,8 @@ export default {
 .big-button-wrapper {
   margin: 5px;
   .big-icon {
-    font-size: 40px;
-    color: red;
+      font-size: 40px;
+      color: red;
   }
 }
 </style>

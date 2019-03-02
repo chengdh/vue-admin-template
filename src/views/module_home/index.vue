@@ -1,14 +1,9 @@
 <template>
   <div class="home-wrapper">
     <el-row :gutter="20">
-      <content-type-cat-button
-        v-for="(cat,i) in content_type_cats_by_group_id(1)"
-        :content-type-cat="cat"
-        :key="i"
-      />
-      <content-type-cat-button
-        v-for="(cat,i) in content_type_cats_by_group_id(1)"
-        :content-type-cat="cat"
+      <content-type-button
+        v-for="(ct,i) in content_type_cat_rels_by_group_id_and_cat_id(1,contentTypeCat.id)"
+        :content-type="ct"
         :key="i"
       />
     </el-row>
@@ -17,17 +12,17 @@
 
 <script>
 import { mapGetters } from "vuex";
-import ContentTypeCatButton from "./components/ContentTypeCatButton";
+import ContentTypeButton from "./components/ContentTypeButton";
 
 export default {
   components: {
-    ContentTypeCatButton
+    ContentTypeButton
   },
+  props: ['contentTypeCat'],
   name: "Home",
   computed: {
-    ...mapGetters(["content_type_cats_by_group_id"])
+    ...mapGetters(["content_type_cat_rels_by_group_id_and_cat_id"])
   }
-  
 };
 </script>
 
