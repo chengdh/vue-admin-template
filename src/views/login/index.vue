@@ -2,6 +2,10 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <h3 class="title">睿盾系统登录</h3>
+      <div class="logo-wrapper">
+        <font-awesome-icon icon="shield-alt" class="logo" />
+      </div>
+
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -157,6 +161,16 @@ $light_gray:#eee;
     max-width: 100%;
     padding: 35px 35px 15px 35px;
     margin: 120px auto;
+  }
+  .logo-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+    .logo {
+      font-size: 80px;
+      font-weight: bold;
+      color: green;
+    }
+
   }
   .tips {
     font-size: 14px;

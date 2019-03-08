@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="logo-wrapper">
-      <i class="el-icon-view logo"/>
+        <font-awesome-icon icon="shield-alt" class="logo"/>
     </div>
     <h3 class="header-title">睿盾系统</h3> 
     <el-dropdown class="avatar-container" trigger="click">
