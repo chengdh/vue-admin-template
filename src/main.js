@@ -31,8 +31,15 @@ import '@/permission' // permission control
  * If you remove `../mock` it will automatically request easy-mock data.
  */
 import '../mock' // simulation data
+import FormBuilder from 'element-form-builder'
+
+import VueSlideoutPanel from 'vue2-slideout-panel'
 
 Vue.use(ElementUI, { locale })
+
+Vue.use(FormBuilder)
+
+Vue.use(VueSlideoutPanel)
 
 library.add(faCoffee, faUserCircle, faShieldAlt)
 

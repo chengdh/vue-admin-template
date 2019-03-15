@@ -9,7 +9,7 @@ const user = {
     last_name: '',
     avatar: '',
     groups: [],
-    orgs: []
+    user_extend: null
   },
 
   mutations: {
@@ -31,10 +31,9 @@ const user = {
     SET_GROUPS: (state, groups) => {
       state.groups = groups
     },
-    SET_ORGS: (state, orgs) => {
-      state.orgs = orgs
+    SET_USER_EXTEND: (state, user_extend) => {
+      state.user_extend = user_extend
     }
-
   },
 
   actions: {
@@ -51,6 +50,7 @@ const user = {
             commit('SET_FIRST_NAME', ret_user.first_name)
             commit('SET_LAST_NAME', ret_user.last_name)
             commit('SET_GROUPS', ret_user.groups)
+            commit('SET_USER_EXTEND', ret_user.user_extend)
             resolve()
           })
           .catch(error => {

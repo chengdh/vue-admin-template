@@ -1,33 +1,21 @@
 <template>
-  <div class="home-wrapper">
-    <el-row :gutter="20">
-      <content-type-button
-        v-for="(ct,i) in content_type_cat_rels_by_group_id_and_cat_id(1,contentTypeCat.id)"
-        :content-type="ct"
-        :key="i"
-      />
-    </el-row>
+  <div class="module-home-wrapper">
+      <router-view></router-view>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import ContentTypeButton from "./components/ContentTypeButton";
-
 export default {
-  components: {
-    ContentTypeButton
-  },
-  props: ['contentTypeCat'],
-  name: "Home",
-  computed: {
-    ...mapGetters(["content_type_cat_rels_by_group_id_and_cat_id"])
+  name: "ModuleHome",
+  props: ["contentTypeCat"],
+  mounted() {
+    this.$router.push({name: 'module_list',params: {meta_title: this.contentTypeCat.name,contentTypeCat: this.contentTypeCat}})
   }
 };
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.home {
+.module-home {
   &-wrapper {
     margin: 30px 10px;
   }

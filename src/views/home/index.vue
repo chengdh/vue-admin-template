@@ -2,12 +2,7 @@
   <div class="home-wrapper">
     <el-row :gutter="20">
       <content-type-cat-button
-        v-for="(cat,i) in content_type_cats_by_group_id(1)"
-        :content-type-cat="cat"
-        :key="i"
-      />
-      <content-type-cat-button
-        v-for="(cat,i) in content_type_cats_by_group_id(1)"
+        v-for="(cat,i) in content_type_cats"
         :content-type-cat="cat"
         :key="i"
       />
@@ -25,7 +20,7 @@ export default {
   },
   name: "Home",
   computed: {
-    ...mapGetters(["content_type_cats_by_group_id"])
+    ...mapGetters(["content_type_cats"])
   }
   
 };

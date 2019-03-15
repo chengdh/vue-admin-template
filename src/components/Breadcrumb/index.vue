@@ -37,9 +37,11 @@ export default {
       }
       let matched = this.$route.matched.filter(item => item.name);
 
-      const first = matched[0];
+      let {0 : first ,[matched.length - 1] : last} = matched;
+      last.params = this.$route.params
+
       if (first && first.name !== "home") {
-        matched = [{ path: "/home", meta: { title: "首页" } }].concat(matched);
+        matched = [{ path: "/", meta: { title: "首页" } }].concat(matched);
       }
 
       this.levelList = matched.filter(
@@ -53,12 +55,12 @@ export default {
       return toPath(params);
     },
     handleLink(item) {
-      const { redirect, path } = item;
+      const { redirect, path,params } = item;
       if (redirect) {
-        this.$router.push(redirect);
+        this.$router.push(redirect,{params: params});
         return;
       }
-      this.$router.push(this.pathCompile(path));
+      this.$router.push(this.pathCompile(path),{params: params});
     }
   }
 };

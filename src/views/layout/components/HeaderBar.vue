@@ -1,9 +1,27 @@
 <template>
   <div class="header">
     <div class="logo-wrapper">
-        <font-awesome-icon icon="shield-alt" class="logo"/>
+      <font-awesome-icon icon="shield-alt" class="logo"/>
     </div>
-    <h3 class="header-title">睿盾系统</h3> 
+    <h3 class="header-title">睿盾系统</h3>
+    <el-dropdown class="permit-parts-container">
+      <span class="el-dropdown-link">
+        {{default_part.name}}
+        <i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item v-for="(p,i) in permit_parts" :key="i">{{ p.name }}</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <el-dropdown class="groups-container">
+      <span class="el-dropdown-link">
+        {{ default_group.name }}
+        <i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item v-for="(g,i) in groups" :key="i">{{ g.name }}</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper-1">
         <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
@@ -16,7 +34,7 @@
           <el-dropdown-item>Home</el-dropdown-item>
         </router-link>
         <el-dropdown-item divided>
-          <span style="display:block;" @click="logout">LogOut</span>
+          <span style="display:block;" @click="logout">退出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -28,7 +46,14 @@ import { mapGetters } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters(["username", "avatar"])
+    ...mapGetters([
+      "username",
+      "avatar",
+      "permit_parts",
+      "groups",
+      "default_part",
+      "default_group"
+    ])
   },
   methods: {
     logout() {
@@ -70,6 +95,20 @@ export default {
     top: 16px;
     color: red;
   }
+  .groups-container {
+    height: 50px;
+    display: inline-block;
+    position: absolute;
+    right: 165px;
+  }
+
+  .permit-parts-container {
+    height: 50px;
+    display: inline-block;
+    position: absolute;
+    right: 335px;
+  }
+
   .avatar-container {
     height: 50px;
     display: inline-block;

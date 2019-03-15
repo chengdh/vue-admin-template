@@ -1,6 +1,6 @@
 <template>
   <el-col :span="3">
-    <div class="big-button-wrapper">
+    <div class="big-button-wrapper" @click.prevent="handleClick">
       <el-button size="medium">
         <i class="el-icon-star-off big-icon"></i>
         <p>
@@ -17,6 +17,11 @@ export default {
     contentType: {
       type: Object,
       required: true
+    }
+  },
+  methods: {
+    handleClick() {
+      this.$router.push({path: this.contentType.front_path})
     }
   }
 };
