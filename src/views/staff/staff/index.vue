@@ -1,11 +1,15 @@
 <template>
   <div class="staff-container">
     <div class="filter-container">
+      <el-input placeholder="姓名/电话" style="width: 200px;" class="filter-item"/>
+
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
+        size="small"
+        round
         @click="handleCreate"
       >新建</el-button>
     </div>
@@ -26,7 +30,7 @@ export default {
     handleCreate() {
       const panelInstance = this.$showPanel({
         component: StaffForm,
-        width: 500,
+        width: 460,
         props: {
           //any data you want passed to your component
         }

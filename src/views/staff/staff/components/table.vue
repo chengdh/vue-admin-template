@@ -5,8 +5,7 @@
       v-loading="listLoading"
       :key="tableKey"
       :data="list"
-      border
-      fit
+      stripe
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"

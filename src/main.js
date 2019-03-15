@@ -35,7 +35,8 @@ import FormBuilder from 'element-form-builder'
 
 import VueSlideoutPanel from 'vue2-slideout-panel'
 
-Vue.use(ElementUI, { locale })
+// Vue.use(ElementUI, { locale })
+Vue.use(ElementUI)
 
 Vue.use(FormBuilder)
 
