@@ -5,7 +5,7 @@
         <span
           v-if="item.redirect==='noredirect'||index==levelList.length-1"
           class="no-redirect"
-        >{{ item.meta.title }} </span>
+        >{{ item.meta.title }}</span>
         <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
@@ -14,6 +14,7 @@
 
 <script>
 import pathToRegexp from "path-to-regexp";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -26,19 +27,22 @@ export default {
       this.getBreadcrumb();
     }
   },
+  computed: {
+    ...mapGetters(["current_content_cat"])
+  },
+
   created() {
     this.getBreadcrumb();
   },
   methods: {
     getBreadcrumb() {
       //判断是否传入了需要修改的title属性
-      if(this.$route.params && this.$route.params.meta_title){
-        this.$route.meta.title =this.$route.params.meta_title 
+      if (this.$route.params && this.$route.params.meta_title) {
+        this.$route.meta.title = this.$route.params.meta_title;
       }
       let matched = this.$route.matched.filter(item => item.name);
 
-      let {0 : first ,[matched.length - 1] : last} = matched;
-      last.params = this.$route.params
+      let { 0: first, [matched.length - 1]: last } = matched;
 
       if (first && first.name !== "home") {
         matched = [{ path: "/", meta: { title: "首页" } }].concat(matched);
@@ -55,12 +59,24 @@ export default {
       return toPath(params);
     },
     handleLink(item) {
-      const { redirect, path,params } = item;
-      if (redirect) {
-        this.$router.push(redirect,{params: params});
-        return;
+      let { redirect, path, params } = item;
+      if (item.name === "module_home") {
+       params = {
+          meta_title: this.current_content_cat.name,
+          contentTypeCat: this.current_content_cat
+        };
       }
-      this.$router.push(this.pathCompile(path),{params: params});
+      if (redirect) {
+        if (redirect.name) {
+          this.$router.push({ name: redirect.name, params: params });
+          return;
+        }
+        if (redirect.path) {
+          this.$router.push({ path: redirect.path, query: params });
+          return;
+        }
+      }
+      this.$router.push({ path: this.pathCompile(path), query: params });
     }
   }
 };

@@ -6,9 +6,14 @@ const app = {
       opened: !+Cookies.get('sidebarStatus'),
       withoutAnimation: false
     },
-    device: 'desktop'
+    device: 'desktop',
+    // 当前选定的二级菜单
+    currentContentCat: undefined
   },
   mutations: {
+    SET_CURRENT_CONTENT_CAT: (state, contentCat) => {
+      state.currentContentCat = contentCat
+    },
     TOGGLE_SIDEBAR: state => {
       if (state.sidebar.opened) {
         Cookies.set('sidebarStatus', 1)
@@ -36,6 +41,9 @@ const app = {
     },
     ToggleDevice({ commit }, device) {
       commit('TOGGLE_DEVICE', device)
+    },
+    SetCurrentContentCat({ commit }, contentCat) {
+      commit('SET_CURRENT_CONTENT_CAT', contentCat)
     }
   }
 }

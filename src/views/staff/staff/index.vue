@@ -13,9 +13,9 @@
         @click="handleCreate"
       >新建</el-button>
     </div>
-    <staff-table/>
+    <staff-table ref="table" :row-dblclick="rowDblclick"/>
     <router-view></router-view>
-    <slideout-panel></slideout-panel>
+    <slideout-panel ref="panel"></slideout-panel>
   </div>
 </template>
 <script>
@@ -26,17 +26,62 @@ export default {
   components: {
     StaffTable
   },
+  data() {
+    return {
+      panel: undefined
+    };
+  },
   methods: {
     handleCreate() {
-      const panelInstance = this.$showPanel({
+      this.panel = this.$showPanel({
         component: StaffForm,
         width: 460,
         props: {
+          //传递callback函数给form
+          onSave: this.onSave,
+          disabled: false,
+          closePanel: this.closePanel
           //any data you want passed to your component
         }
       });
 
       // this.$router.push({ name: "new_staff" });
+    },
+    onSave(staff) {
+      console.log("on save");
+      if (this.panel) {
+        this.panel.hide();
+      }
+      this.$refs["table"].getList();
+    },
+    onDestroy(staff) {
+      console.log("on destroy");
+    },
+    //关闭弹出窗口
+    closePanel(){
+      if(this.panel){
+        this.panel.hide()
+      }
+
+    },
+    //鼠标双击事件
+    rowDblclick(row, col, evt) {
+      console.log("row dblclick");
+      const staffId = row.staff_id
+      this.panel = this.$showPanel({
+        component: StaffForm,
+        width: 460,
+        props: {
+          //传递callback函数给form
+          onSave: this.onSave,
+          disabled: true,
+          staffId: staffId,
+          closePanel: this.closePanel
+          //any data you want passed to your component
+        }
+      });
+
+
     }
   }
 };

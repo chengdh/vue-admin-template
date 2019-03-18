@@ -1,7 +1,14 @@
 <template>
   <div class="form-wrapper">
     <div class="header">人员资料</div>
-    <el-form ref="form" :model="form" size="mini" :rules="rules" inline-message label-width="100px">
+    <el-form
+      ref="form"
+      :model="form"
+      size="mini"
+      :disabled="disabled"
+      inline-message
+      label-width="100px"
+    >
       <el-form-item label="姓名" prop="name">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
@@ -37,31 +44,25 @@
         <el-input v-model="form.birth_place"></el-input>
       </el-form-item>
 
-      <el-form-item label="工作岗位">
-        <el-select v-model="form.blood" placeholder="工作岗位">
-          <el-option v-for="(js,i) in job_stations" :key="i" :label="js.name" :value="js.id"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="所在工区">
-        <el-select v-model="form.part" placeholder="所属工区">
+        <el-select v-model="form.part_id" placeholder="所属工区">
           <el-option v-for="(part,i) in parts" :key="i" :label="part.name" :value="part.id"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="工作岗位">
+        <el-select v-model="form.job_station_id" placeholder="工作岗位">
+          <el-option v-for="(js,i) in job_stations" :key="i" :label="js.name" :value="js.id"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="所属公司">
-        <el-select v-model="form.company" placeholder="所属公司">
+        <el-select v-model="form.company_id" placeholder="所属公司">
           <el-option v-for="(c,i) in companies" :key="i" :label="c.name" :value="c.id"></el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item label="施工班组">
-        <el-select v-model="form.group" placeholder="施工班组">
+        <el-select v-model="form.group_id" placeholder="施工班组">
           <el-option v-for="(team,i) in teams" :key="i" :label="team.name" :value="team.id"></el-option>
-        </el-select>
-      </el-form-item>
-
-      <el-form-item label="工作岗位">
-        <el-select v-model="form.job_station" placeholder="工作岗位">
-          <el-option v-for="(js,i) in job_stations" :key="i" :label="js.name" :value="js.id"></el-option>
         </el-select>
       </el-form-item>
 
@@ -82,24 +83,40 @@
     </el-form>
     <!-- <el-form-builder :config="formConfig" v-model="formValues" label-width="80px"></el-form-builder> -->
     <div class="footer">
-      <el-button type="primary" @click="onSubmit('form')" size="small">保存</el-button>
-      <el-button size="small">取消</el-button>
+
+      <el-button type="primary" v-if="disabled" @click="disabled=false" size="small">编辑</el-button>
+      <el-button type="primary" v-if="!disabled" @click="onSubmit('form')" size="small">保存</el-button>
+      <el-button type="danger" v-if="staffId" @click="destroy('form')" size="small">删除</el-button>
+      <el-button size="small" @click="closePanel()">取消</el-button>
     </div>
   </div>
 </template>
 <script>
+
+import { createStaff,fetchStaff,updateStaff } from "@/api/staff";
+import { fetchCompanyList } from "@/api/company";
+import { fetchDepartmentList } from "@/api/department";
+import { fetchTeamList } from "@/api/team";
+import { fetchPartList } from "@/api/part";
+import { fetchJobStationList } from "@/api/job_station";
 export default {
   name: "StaffForm",
-  name: "StaffForm",
+  props: {
+    disabled: {type: Boolean,default: false}, 
+    onSave: Function,
+    onDestroy: Function,
+    staffId: String,
+    closePanel: Function
+  },
   data() {
     return {
       form: {
-        staff_id: "1",
-        company: "",
-        part: "",
-        group: "",
-        department: "",
-        job_station: "",
+        staff_id: undefined,
+        company_id: "",
+        part_id: "",
+        group_id: "",
+        department_id: "",
+        job_station_id: "",
         name: "",
         sex: "男",
         age: 25,
@@ -121,26 +138,84 @@ export default {
         id_card: [
           { required: true, message: "请输入身份证号", trigger: "blur" }
         ],
-        company: [
+        company_id: [
           { required: true, message: "请选择所属机构", trigger: "change" }
         ]
       },
       companies: [],
       parts: [],
       teams: [],
-      departments: []
+      departments: [],
+      job_stations: []
     };
+  },
+  created() {
+    if(this.staffId){
+      fetchStaff(this.staffId).then(response => {
+        this.form = response
+      })
+    }
+    fetchCompanyList().then(response => {
+      this.companies = response.results;
+    });
+    fetchPartList().then(response => {
+      this.parts = response.results;
+    });
+    fetchTeamList().then(response => {
+      this.teams = response.results;
+    });
+    fetchDepartmentList().then(response => {
+      this.departments = response.results;
+    });
+    fetchJobStationList().then(response => {
+      this.job_stations = response.results;
+    });
   },
   methods: {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
+        this.disabled = true;
         if (valid) {
-          alert("submit!");
+          if(this.form.staff_id){
+            updateStaff(this.form.staff_id,this.form).then(resonse => {
+              this.$message({
+                type: 'success',
+                message: '更新人员资料成功!'
+              })
+            })
+          }
+          else{
+            createStaff(this.form).then(response => {
+              this.$message({
+                type: 'success',
+                message: '创建人员资料成功!'
+              })
+            })
+          }
+          this.onSave(this.form)
+
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+    },
+    destroy(form){
+      this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     }
   }
 };

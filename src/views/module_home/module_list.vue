@@ -1,11 +1,11 @@
 <template>
-    <el-row :gutter="20">
-        <content-type-button
-          v-for="(ct,i) in content_type_cat_rels_by_cat_id(contentTypeCat.id)"
-          :content-type="ct"
-          :key="i"
-        />
-    </el-row>
+  <el-row :gutter="20">
+    <content-type-button
+      v-for="(ct,i) in content_type_cat_rels_by_cat_id(contentTypeCat.id)"
+      :content-type="ct"
+      :key="i"
+    />
+  </el-row>
 </template>
 
 <script>

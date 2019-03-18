@@ -9,6 +9,7 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
+      @row-dblclick="rowDblclick"
     >
       <el-table-column type="index" :index="indexMethod"/>
 
@@ -21,23 +22,16 @@
       <el-table-column label="手机" prop="age"/>
       <el-table-column label="工作岗位" prop="job_station"/>
       <el-table-column label="录入时间" prop="create_time"/>
-      <el-table-column
+      <!-- <el-table-column
         label="操作"
         align="center"
         width="230"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">修改</el-button>
-
-          <el-button
-            v-if="scope.row.status!='deleted'"
-            size="mini"
-            type="danger"
-            @click="handleModifyStatus(scope.row,'deleted')"
-          >删除</el-button>
+          <el-button type="primary" icon="el-icon-view" size="mini" @click="$emit('row-dblclick',scope.row)">查看</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
 
     <pagination
@@ -57,6 +51,7 @@ import Pagination from "@/components/Pagination"; // Secondary package based on 
 export default {
   name: "StaffTable",
   components: { Pagination },
+  props: ["rowDblclick"], 
   data() {
     return {
       tableKey: 0,
@@ -82,7 +77,7 @@ export default {
   },
   methods: {
     indexMethod(i) {
-      return i
+      return i + 1
 
     },
     getList() {
@@ -90,10 +85,7 @@ export default {
       fetchList(this.listQuery).then(response => {
         this.list = response.results;
         this.total = response.count;
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
+        this.listLoading = false;
       });
     },
     handleFilter() {
@@ -114,6 +106,7 @@ export default {
       }
       this.handleFilter();
     },
+    
     resetTemp() {
       this.temp = {
         id: undefined,

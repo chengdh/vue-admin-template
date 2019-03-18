@@ -10,24 +10,29 @@ export function fetchList(query) {
 
 export function fetchStaff(id) {
   return request({
-    url: '/staff/',
-    method: 'get',
-    params: { id }
+    url: '/staff/staffs/${id}',
+    method: 'get'
   })
 }
 
-export function createArticle(data) {
+export function createStaff(data) {
   return request({
-    url: '/article/create',
+    url: '/staff/staffs/',
     method: 'post',
     data
   })
 }
 
-export function updateArticle(data) {
+export function updateStaff(id, data) {
   return request({
-    url: '/article/update',
-    method: 'post',
+    url: '/staff/staffs/${id}',
+    method: 'put',
     data
+  })
+}
+export function destroyStaff(id) {
+  return request({
+    url: '/staff/staffs/${id}',
+    method: 'delete'
   })
 }
