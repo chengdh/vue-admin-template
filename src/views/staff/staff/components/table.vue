@@ -6,6 +6,7 @@
       :key="tableKey"
       :data="list"
       stripe
+      size="small"
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"

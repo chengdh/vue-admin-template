@@ -106,7 +106,12 @@ export default {
     onSave: Function,
     onDestroy: Function,
     staffId: String,
-    closePanel: Function
+    closePanel: Function,
+    companies: {type: Array, default: []},
+    parts: {type: Array, default: []},
+    teams: {type: Array, default: []},
+    departments: {type: Array, default: []},
+    job_stations: {type: Array, default: []}
   },
   data() {
     return {
@@ -142,11 +147,7 @@ export default {
           { required: true, message: "请选择所属机构", trigger: "change" }
         ]
       },
-      companies: [],
-      parts: [],
-      teams: [],
-      departments: [],
-      job_stations: []
+    
     };
   },
   created() {
@@ -155,21 +156,6 @@ export default {
         this.form = response
       })
     }
-    fetchCompanyList().then(response => {
-      this.companies = response.results;
-    });
-    fetchPartList().then(response => {
-      this.parts = response.results;
-    });
-    fetchTeamList().then(response => {
-      this.teams = response.results;
-    });
-    fetchDepartmentList().then(response => {
-      this.departments = response.results;
-    });
-    fetchJobStationList().then(response => {
-      this.job_stations = response.results;
-    });
   },
   methods: {
     onSubmit(formName) {

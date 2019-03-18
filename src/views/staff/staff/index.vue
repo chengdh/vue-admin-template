@@ -1,13 +1,35 @@
 <template>
   <div class="staff-container">
     <div class="filter-container">
-      <el-input placeholder="姓名/电话" style="width: 200px;" class="filter-item"/>
+      <el-input placeholder="姓名/电话" style="width: 200px;" size="small" class="filter-item"/>
+      <el-select placeholder="所属工区" size="small" >
+        <el-option v-for="(part,i) in parts" :key="i" :label="part.name" :value="part.id"></el-option>
+      </el-select>
+      <el-select placeholder="工作岗位" size="small" >
+        <el-option v-for="(js,i) in job_stations" :key="i" :label="js.name" :value="js.id"></el-option>
+      </el-select>
+      <el-select placeholder="所属公司" size="small" >
+        <el-option v-for="(c,i) in companies" :key="i" :label="c.name" :value="c.id"></el-option>
+      </el-select>
+
+      <el-select placeholder="施工班组" size="small" >
+        <el-option v-for="(team,i) in teams" :key="i" :label="team.name" :value="team.id"></el-option>
+      </el-select>
 
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
-        icon="el-icon-edit"
+        icon="el-icon-search"
+        size="small"
+        round
+        @click="handleCreate"
+      >查询</el-button>
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="primary"
+        icon="el-icon-plus"
         size="small"
         round
         @click="handleCreate"
@@ -19,6 +41,11 @@
   </div>
 </template>
 <script>
+import { fetchCompanyList } from "@/api/company";
+import { fetchDepartmentList } from "@/api/department";
+import { fetchTeamList } from "@/api/team";
+import { fetchPartList } from "@/api/part";
+import { fetchJobStationList } from "@/api/job_station";
 import StaffTable from "./components/table";
 import StaffForm from "./components/form";
 export default {
@@ -28,8 +55,30 @@ export default {
   },
   data() {
     return {
-      panel: undefined
+      panel: undefined,
+      companies: [],
+      parts: [],
+      teams: [],
+      departments: [],
+      job_stations: []
     };
+  },
+  created() {
+    fetchCompanyList().then(response => {
+      this.companies = response.results;
+    });
+    fetchPartList().then(response => {
+      this.parts = response.results;
+    });
+    fetchTeamList().then(response => {
+      this.teams = response.results;
+    });
+    fetchDepartmentList().then(response => {
+      this.departments = response.results;
+    });
+    fetchJobStationList().then(response => {
+      this.job_stations = response.results;
+    });
   },
   methods: {
     handleCreate() {
@@ -40,12 +89,16 @@ export default {
           //传递callback函数给form
           onSave: this.onSave,
           disabled: false,
-          closePanel: this.closePanel
+          closePanel: this.closePanel,
+          companies: this.companies,
+          parts: this.parts,
+          departments: this.departments,
+          teams: this.teams,
+          job_stations: this.job_stations
           //any data you want passed to your component
         }
       });
 
-      // this.$router.push({ name: "new_staff" });
     },
     onSave(staff) {
       console.log("on save");
@@ -58,16 +111,15 @@ export default {
       console.log("on destroy");
     },
     //关闭弹出窗口
-    closePanel(){
-      if(this.panel){
-        this.panel.hide()
+    closePanel() {
+      if (this.panel) {
+        this.panel.hide();
       }
-
     },
     //鼠标双击事件
     rowDblclick(row, col, evt) {
       console.log("row dblclick");
-      const staffId = row.staff_id
+      const staffId = row.staff_id;
       this.panel = this.$showPanel({
         component: StaffForm,
         width: 460,
@@ -76,12 +128,15 @@ export default {
           onSave: this.onSave,
           disabled: true,
           staffId: staffId,
-          closePanel: this.closePanel
+          closePanel: this.closePanel,
+          companies: this.companies,
+          parts: this.parts,
+          departments: this.departments,
+          teams: this.teams,
+          job_stations: this.job_stations
           //any data you want passed to your component
         }
       });
-
-
     }
   }
 };
