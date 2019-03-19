@@ -1,18 +1,18 @@
 <template>
   <div class="staff-container">
     <div class="filter-container">
-      <el-input placeholder="姓名/电话" style="width: 200px;" size="small" class="filter-item"/>
-      <el-select placeholder="所属工区" size="small" >
+      <el-input placeholder="姓名/电话" style="width: 200px;" v-model="listQuery.name" size="small" class="filter-item"/>
+      <el-select placeholder="所属工区" size="small" v-model="listQuery.part_id"  >
         <el-option v-for="(part,i) in parts" :key="i" :label="part.name" :value="part.id"></el-option>
       </el-select>
-      <el-select placeholder="工作岗位" size="small" >
+      <el-select placeholder="工作岗位" size="small" v-model="listQuery.job_station_id"   >
         <el-option v-for="(js,i) in job_stations" :key="i" :label="js.name" :value="js.id"></el-option>
       </el-select>
-      <el-select placeholder="所属公司" size="small" >
+      <el-select placeholder="所属公司" size="small"  v-model="listQuery.company_id"  >
         <el-option v-for="(c,i) in companies" :key="i" :label="c.name" :value="c.id"></el-option>
       </el-select>
 
-      <el-select placeholder="施工班组" size="small" >
+      <el-select placeholder="施工班组" size="small" v-model="listQuery.group_id"   >
         <el-option v-for="(team,i) in teams" :key="i" :label="team.name" :value="team.id"></el-option>
       </el-select>
 
@@ -23,7 +23,7 @@
         icon="el-icon-search"
         size="small"
         round
-        @click="handleCreate"
+        @click="handleQuery"
       >查询</el-button>
       <el-button
         class="filter-item"
@@ -35,7 +35,7 @@
         @click="handleCreate"
       >新建</el-button>
     </div>
-    <staff-table ref="table" :row-dblclick="rowDblclick"/>
+    <staff-table ref="table" :row-dblclick="rowDblclick" :list-query.sync="listQuery" />
     <router-view></router-view>
     <slideout-panel ref="panel"></slideout-panel>
   </div>
@@ -60,7 +60,16 @@ export default {
       parts: [],
       teams: [],
       departments: [],
-      job_stations: []
+      job_stations: [],
+      listQuery:{
+        page: 1,
+        limit: 20,
+        name: "",
+        company_id: undefined,
+        part_id: undefined,
+        group_id: undefined,
+        job_station_id: undefined
+      }
     };
   },
   created() {
@@ -98,7 +107,9 @@ export default {
           //any data you want passed to your component
         }
       });
-
+    },
+    handleQuery(){
+      this.$refs['table'].getList()
     },
     onSave(staff) {
       console.log("on save");
@@ -109,6 +120,10 @@ export default {
     },
     onDestroy(staff) {
       console.log("on destroy");
+      if (this.panel) {
+        this.panel.hide();
+      }
+      this.$refs["table"].getList();
     },
     //关闭弹出窗口
     closePanel() {
@@ -126,6 +141,7 @@ export default {
         props: {
           //传递callback函数给form
           onSave: this.onSave,
+          onDestroy: this.onDestroy,
           disabled: true,
           staffId: staffId,
           closePanel: this.closePanel,

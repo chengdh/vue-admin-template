@@ -4,6 +4,7 @@
     <el-form
       ref="form"
       :model="form"
+      :rules="rules"
       size="mini"
       :disabled="disabled"
       inline-message
@@ -93,7 +94,7 @@
 </template>
 <script>
 
-import { createStaff,fetchStaff,updateStaff } from "@/api/staff";
+import { createStaff,fetchStaff,updateStaff,destroyStaff } from "@/api/staff";
 import { fetchCompanyList } from "@/api/company";
 import { fetchDepartmentList } from "@/api/department";
 import { fetchTeamList } from "@/api/team";
@@ -156,6 +157,7 @@ export default {
         this.form = response
       })
     }
+  
   },
   methods: {
     onSubmit(formName) {
@@ -168,6 +170,8 @@ export default {
                 type: 'success',
                 message: '更新人员资料成功!'
               })
+            }).then(() => {
+              this.onSave(this.form)
             })
           }
           else{
@@ -176,9 +180,10 @@ export default {
                 type: 'success',
                 message: '创建人员资料成功!'
               })
+            }).then(() => {
+              this.onSave(this.form)
             })
           }
-          this.onSave(this.form)
 
         } else {
           console.log("error submit!!");
@@ -192,11 +197,15 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
+          destroyStaff(this.form.staff_id).then(resonse => {
+              this.$message({
+                type: 'success',
+                message: '删除人员资料成功!'
+              })
+            }).then(() => {
+              this.onDestroy(this.form)
+            })
+        }).catch((resp) => {
           this.$message({
             type: 'info',
             message: '已取消删除'

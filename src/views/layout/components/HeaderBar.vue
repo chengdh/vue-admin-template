@@ -45,6 +45,7 @@
 import { mapGetters } from "vuex";
 
 export default {
+  name: "HeaderBar",
   computed: {
     ...mapGetters([
       "username",
