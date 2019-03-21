@@ -58,7 +58,7 @@ export default {
       tableKey: 0,
       list: null,
       total: 0,
-      listLoading: true,
+      listLoading: false,
       sortOptions: [
         { label: "ID Ascending", key: "+id" },
         { label: "ID Descending", key: "-id" }
@@ -66,7 +66,7 @@ export default {
     };
   },
   created() {
-    this.getList();
+    // this.getList();
   },
   methods: {
     indexMethod(i) {

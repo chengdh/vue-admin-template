@@ -73,21 +73,21 @@ export default {
     };
   },
   created() {
-    fetchCompanyList().then(response => {
-      this.companies = response.results;
-    });
-    fetchPartList().then(response => {
-      this.parts = response.results;
-    });
-    fetchTeamList().then(response => {
-      this.teams = response.results;
-    });
-    fetchDepartmentList().then(response => {
-      this.departments = response.results;
-    });
-    fetchJobStationList().then(response => {
-      this.job_stations = response.results;
-    });
+    // fetchCompanyList().then(response => {
+    //   this.companies = response.results;
+    // });
+    // fetchPartList().then(response => {
+    //   this.parts = response.results;
+    // });
+    // fetchTeamList().then(response => {
+    //   this.teams = response.results;
+    // });
+    // fetchDepartmentList().then(response => {
+    //   this.departments = response.results;
+    // });
+    // fetchJobStationList().then(response => {
+    //   this.job_stations = response.results;
+    // });
   },
   methods: {
     handleCreate() {

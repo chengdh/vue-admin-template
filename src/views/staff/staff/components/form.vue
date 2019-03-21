@@ -15,8 +15,8 @@
       </el-form-item>
       <el-form-item label="性别" prop="sex">
         <el-radio-group v-model="form.sex">
-          <el-radio label="男"></el-radio>
-          <el-radio label="女"></el-radio>
+          <el-radio :label="0">男</el-radio>
+          <el-radio :label="1">女</el-radio>
         </el-radio-group>
       </el-form-item>
 
@@ -66,25 +66,24 @@
           <el-option v-for="(team,i) in teams" :key="i" :label="team.name" :value="team.id"></el-option>
         </el-select>
       </el-form-item>
-
       <el-form-item label="状态">
-        <el-switch v-model="form.state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+        <el-switch
+          v-model="form.state"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          :active-value="1"
+          :inactive-value="0"
+        ></el-switch>
       </el-form-item>
       <div class="header">头像</div>
-      <el-upload
-        class="avatar-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload"
-      >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      <el-upload class="avatar-uploader" action :auto-upload="false" :on-change="onIdPhotoChange">
+        <i class="el-icon-plus"></i>
+        <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar"> -->
+        <!-- <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
       </el-upload>
     </el-form>
     <!-- <el-form-builder :config="formConfig" v-model="formValues" label-width="80px"></el-form-builder> -->
     <div class="footer">
-
       <el-button type="primary" v-if="disabled" @click="disabled=false" size="small">编辑</el-button>
       <el-button type="primary" v-if="!disabled" @click="onSubmit('form')" size="small">保存</el-button>
       <el-button type="danger" v-if="staffId" @click="destroy('form')" size="small">删除</el-button>
@@ -93,8 +92,12 @@
   </div>
 </template>
 <script>
-
-import { createStaff,fetchStaff,updateStaff,destroyStaff } from "@/api/staff";
+import {
+  createStaff,
+  fetchStaff,
+  updateStaff,
+  destroyStaff
+} from "@/api/staff";
 import { fetchCompanyList } from "@/api/company";
 import { fetchDepartmentList } from "@/api/department";
 import { fetchTeamList } from "@/api/team";
@@ -103,28 +106,28 @@ import { fetchJobStationList } from "@/api/job_station";
 export default {
   name: "StaffForm",
   props: {
-    disabled: {type: Boolean,default: false}, 
+    disabled: { type: Boolean, default: false },
     onSave: Function,
     onDestroy: Function,
     staffId: String,
     closePanel: Function,
-    companies: {type: Array, default: []},
-    parts: {type: Array, default: []},
-    teams: {type: Array, default: []},
-    departments: {type: Array, default: []},
-    job_stations: {type: Array, default: []}
+    companies: { type: Array, default: [] },
+    parts: { type: Array, default: [] },
+    teams: { type: Array, default: [] },
+    departments: { type: Array, default: [] },
+    job_stations: { type: Array, default: [] }
   },
   data() {
     return {
       form: {
         staff_id: undefined,
-        company_id: "",
-        part_id: "",
-        group_id: "",
-        department_id: "",
-        job_station_id: "",
+        company_id: 1,
+        part_id: 1,
+        group_id: 1,
+        department_id: 1,
+        job_station_id: 1,
         name: "",
-        sex: "男",
+        sex: 0,
         age: 25,
         birth_place: "",
         address: "",
@@ -134,7 +137,7 @@ export default {
         blood: "A",
         medical_history: "无",
         state: 1,
-        note: ""
+        note: "note"
       },
       rules: {
         name: [
@@ -147,70 +150,81 @@ export default {
         company_id: [
           { required: true, message: "请选择所属机构", trigger: "change" }
         ]
-      },
-    
+      }
     };
   },
   created() {
-    if(this.staffId){
+    if (this.staffId) {
       fetchStaff(this.staffId).then(response => {
-        this.form = response
-      })
+        this.form = response;
+      });
     }
-  
   },
   methods: {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         this.disabled = true;
         if (valid) {
-          if(this.form.staff_id){
-            updateStaff(this.form.staff_id,this.form).then(resonse => {
-              this.$message({
-                type: 'success',
-                message: '更新人员资料成功!'
+          if (this.form.staff_id) {
+            updateStaff(this.form.staff_id, this.form)
+              .then(resonse => {
+                this.$message({
+                  type: "success",
+                  message: "更新人员资料成功!"
+                });
               })
-            }).then(() => {
-              this.onSave(this.form)
-            })
-          }
-          else{
-            createStaff(this.form).then(response => {
-              this.$message({
-                type: 'success',
-                message: '创建人员资料成功!'
+              .then(() => {
+                this.onSave(this.form);
+              });
+          } else {
+            let formData = new FormData();
+            for (var key in this.form) {
+              formData.append(key, this.form[key]);
+            }
+            createStaff(formData)
+              .then(response => {
+                this.$message({
+                  type: "success",
+                  message: "创建人员资料成功!"
+                });
               })
-            }).then(() => {
-              this.onSave(this.form)
-            })
+              .then(() => {
+                this.onSave(this.form);
+              });
           }
-
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
-    destroy(form){
-      this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          destroyStaff(this.form.staff_id).then(resonse => {
+    destroy(form) {
+      this.$confirm("此操作将永久删除数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          destroyStaff(this.form.staff_id)
+            .then(resonse => {
               this.$message({
-                type: 'success',
-                message: '删除人员资料成功!'
-              })
-            }).then(() => {
-              this.onDestroy(this.form)
+                type: "success",
+                message: "删除人员资料成功!"
+              });
             })
-        }).catch((resp) => {
+            .then(() => {
+              this.onDestroy(this.form);
+            });
+        })
+        .catch(resp => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
+            type: "info",
+            message: "已取消删除"
+          });
         });
+    },
+    onIdPhotoChange(file, fileList) {
+      this.form.id_card_photo = file.raw;
     }
   }
 };

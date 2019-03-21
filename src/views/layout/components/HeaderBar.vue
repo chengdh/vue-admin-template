@@ -97,14 +97,14 @@ export default {
     color: red;
   }
   .groups-container {
-    height: 50px;
+    // height: 50px;
     display: inline-block;
     position: absolute;
     right: 165px;
   }
 
   .permit-parts-container {
-    height: 50px;
+    // height: 50px;
     display: inline-block;
     position: absolute;
     right: 335px;

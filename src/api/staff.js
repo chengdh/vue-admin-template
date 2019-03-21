@@ -18,6 +18,7 @@ export function fetchStaff(id) {
 export function createStaff(data) {
   return request({
     url: '/staff/staffs/',
+    headers: { 'Content-Type': 'multipart/form-data' },
     method: 'post',
     data
   })
